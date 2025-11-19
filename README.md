@@ -54,6 +54,51 @@ Run the code and verify that the system detects human presence and draws boundin
  
 import cv2
 import imutils
+```
+import cv2
+import imutils
+
+# DroidCam URL
+url = "http://10.168.211.210:4747/video"
+
+# Initialize video capture from DroidCam stream
+cap = cv2.VideoCapture(url)
+
+# Initialize HOG descriptor for person detection
+hog = cv2.HOGDescriptor()
+hog.setSVMDetector(cv2.HOGDescriptor_getDefaultPeopleDetector())
+
+while True:
+    ret, frame = cap.read()
+    if not ret:
+        print("Failed to grab frame")
+        break
+
+    # Resize frame for faster processing
+    frame = imutils.resize(frame, width=640)
+
+    # Detect people
+    rects, weights = hog.detectMultiScale(
+        frame,
+        winStride=(4, 4),
+        padding=(8, 8),
+        scale=1.05
+    )
+
+    # Draw bounding boxes
+    for (x, y, w, h) in rects:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+    # Display results
+    cv2.imshow("Occupancy Detection", frame)
+
+    # Exit on 'q'
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cap.release()
+cv2.destroyAllWindows()
+```
 
 ###  Initialize HOG descriptor with people detector
 hog = cv2.HOGDescriptor()
@@ -90,14 +135,7 @@ cv2.destroyAllWindows()
 
 
 ### SCREEN SHOTS OF OUTPUT 
-
-
-
-
-
-### RASPI INTERFACE 
-
-
+<img width="1920" height="1080" alt="Screenshot (40)" src="https://github.com/user-attachments/assets/ea5f3f0b-f0a9-4c7e-9390-05ff7f3cfa33" />
 
 
 ### Result:
